@@ -17,6 +17,7 @@ use crate::stdlib::StdLib;
 use crate::string::String;
 use crate::table::Table;
 use crate::thread::Thread;
+use crate::traits::FromLua;
 use crate::traits::IntoLua;
 use crate::types::{
     AppDataRef, AppDataRefMut, Callback, CallbackUpvalue, DestructedUserdata, Integer, LightUserData,
@@ -77,6 +78,17 @@ impl Drop for RawLua {
                 (*ffi::lua_callbacks(self.main_state())).userthread = None;
             }
 
+            #[cfg(feature = "luau-lute")]
+            {
+                // Destroy lute runtime if we are calling the destructor at this point
+                let runtime_loaded = ffi::lutec_isruntimeloaded(self.main_state()) == 1;
+
+                if runtime_loaded {
+                    ffi::lutec_destroy_runtime(self.main_state());
+                }
+            }
+
+            println!("Dropping RawLua :)");
             ffi::lua_close(self.main_state());
 
             // Deallocate `MemoryState`

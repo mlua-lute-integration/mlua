@@ -80,6 +80,8 @@ mod function;
 mod hook;
 #[cfg(any(feature = "luau", doc))]
 mod luau;
+#[cfg(any(feature = "luau-lute", doc))]
+mod lute;
 mod memory;
 mod multi;
 mod scope;

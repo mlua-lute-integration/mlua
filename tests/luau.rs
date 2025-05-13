@@ -12,7 +12,18 @@ use mlua::{Compiler, Error, Lua, LuaOptions, Result, StdLib, Table, ThreadStatus
 #[test]
 fn test_version() -> Result<()> {
     let lua = Lua::new();
+    println!("Ver: {}", lua.globals().get::<String>("_VERSION")?);
     assert!(lua.globals().get::<String>("_VERSION")?.starts_with("Luau 0."));
+    Ok(())
+}
+
+#[cfg(feature = "luau-lute")]
+#[test]
+fn test_lute() -> Result<()> {
+    let lua = Lua::new();
+    assert!(!lua.is_lute_loaded()?);
+    lua.setup_lute_runtime()?;
+    assert!(lua.is_lute_loaded()?);
     Ok(())
 }
 

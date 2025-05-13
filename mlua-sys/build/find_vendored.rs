@@ -17,13 +17,22 @@ pub fn probe_lua() {
     let artifacts = luajit_src::Build::new()
         .lua52compat(cfg!(feature = "luajit52"))
         .build();
+    
+    #[cfg(feature = "luau-lute")]{
+        #[cfg(feature = "luau-vector4")] {
+            compile_error!("lute runtime does not support vector4 builds");
+        }
+        lute_src_rs::build_lute()
+    }
+    #[cfg(not(feature = "luau-lute"))]
+    {
+        #[cfg(feature = "luau")]
+        let artifacts = luau0_src::Build::new()
+            .enable_codegen(cfg!(feature = "luau-codegen"))
+            .set_max_cstack_size(1000000)
+            .set_vector_size(if cfg!(feature = "luau-vector4") { 4 } else { 3 })
+            .build();
 
-    #[cfg(feature = "luau")]
-    let artifacts = luau0_src::Build::new()
-        .enable_codegen(cfg!(feature = "luau-codegen"))
-        .set_max_cstack_size(1000000)
-        .set_vector_size(if cfg!(feature = "luau-vector4") { 4 } else { 3 })
-        .build();
-
-    artifacts.print_cargo_metadata();
+        artifacts.print_cargo_metadata();
+    }
 }

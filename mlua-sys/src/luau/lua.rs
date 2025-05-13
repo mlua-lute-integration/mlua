@@ -12,10 +12,10 @@ pub const LUA_MULTRET: c_int = -1;
 const LUAI_MAXCSTACK: c_int = 1000000;
 
 // Number of valid Lua userdata tags
-pub const LUA_UTAG_LIMIT: c_int = 128;
+pub const LUA_UTAG_LIMIT: c_int = 255;
 
 // Number of valid Lua lightuserdata tags
-pub const LUA_LUTAG_LIMIT: c_int = 128;
+pub const LUA_LUTAG_LIMIT: c_int = 255;
 
 //
 // Pseudo-indices
